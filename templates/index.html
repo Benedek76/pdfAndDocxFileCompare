@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<p>Hello Bennnn!</p>
+</body>
+</html>
+<--
+Egy olyan Flask alkalmazason dolgozom, amely feltoltheto PDF dokumentumot hasonlit ossze egy DOCX faj tartalmaval, ami a master.
+
+Az aplikacio konyvtar strukturaja a kovetkezo:
+
+Egy olyan Flask alkalmazason dolgozom, amely feltoltheto PDF dokumentumot hasonlit ossze egy DOCX faj tartalmaval, ami a master.
+
+Az aplikacio konyvtar strukturaja a kovetkezo:
+
+compareIt
+|
+|--.venv
+|--app
+|      |--__init__.py
+|      |--compare.py
+|      |--login.py
+|      |--models.py
+|
+|--static
+|      |--assets
+|             |--css
+|             |--images
+|
+|--templates
+|      |--compare.html
+|      |--compare_result.html
+|      |--login.html
+|
+|--uploads
+|--config.py
+|--server.py
+
+
+A fajlok a kovetkezok:
+-styles.css
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+
+html, body {
+    margin: 0 1% 0 1%;
+    padding: 0;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #8CEC00;
+    color: #444;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+    padding: 6rem 0;
+}
+
+footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px;
+}
+
+.box {
+    background-color: #fff;
+    box-shadow: 0 0 0.5rem rgba(68, 68, 68, 0.5);
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    text-align: center;
+    width: 25%;
+}
+
+img {
+    width: 70%;
+}
+
+.box_title {
+    margin: 0 0 0.25rem;
+}
+
+.box_subtitle {
+    color: #888;
+    margin: 0 0 2rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form_input {
+    background-color: #eee;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+}
+
+.form_input::placeholder {
+    color: #888;
+}
+
+.form_button {
+    background-color: #000000;
+    border: none;
+    color: #8CEC00;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    transition: all 0.15s;
+}
+
+.form_button:hover {
+    background-color: #eee;
+    color: #888;
+}
+
+.information {
+    color: #fff;
+    text-align: center;
+}
+
+.information_title {
+    margin: 0 0 2rem;
+}
+
+.information_button {
+    background-color: #ae5050;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.information_button:hover {
+    background-color: rgba(174, 80, 80, 0.875);
+}
+
+.alert {
+    background-color: #ae5050;
+    color: #fff;
+    margin-bottom: 2rem;
+    padding: 0.75rem 2rem;
+}
+
+#version{
+    display: flex;
+    align-items: right;
+}
+/*
+.button{
+    background-color: #DCDCDC;
+}
+*/
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            margin: 0%;
+            padding: 30%;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Az ikonok stílusa */
+        .file-icon {
+            width: 100%; /* Százalékos szélesség a responsivitáshoz */
+            max-width: 150px; /* Maximális szélesség */
+            cursor: pointer;
+        }
+
+        .file-icon img {
+            width: 100%; /* A kép teljes szélességét kitölti */
+            height: auto; /* Magassága arányosan változik */
+        }
+
+        /* Flexbox outer div */
+        #outer {
+            display: flex;
+            width: 80%; /* Töltse ki a teljes rendelkezésre álló helyet */
+            margin: 0 auto;
+            justify-content: space-between;
+            gap: 10%;
+        }
+
+        /* A belső div-ek szervezése */
+        #left-inner-div, #right-inner-div {
+            flex: 1;
+            /*border: solid 1px black;*/
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Középre igazítja a h1-et */
+            width: 100%;
+        }
+
+        /* Az egy sorban lévő elemek */
+        .inner-row {
+            display: flex;
+            justify-content: space-between; /* Egyenlő távolság az elemek között */
+            width: 100%; /* Az egész rendelkezésre álló helyet kitöltik */
+            margin-bottom: 20px; /* Alsó margó */
+        }
+
+        /* Oszlopok flexbox elrendezésben */
+        .inner-column {
+            flex: 1;
+            display: flex;
+            justify-content: center; /* Középre igazítja a tartalmat */
+        }
+
+        /* A gombokat középre helyezi a diven belül */
+        .form-button {
+            margin-bottom: 5%;
+            padding: 3% 5%;
+            background-color: black;
+            color: #8CEC00;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1vw;
+        }
+
+        /* Responsív stílus mobil eszközökhöz */
+        @media (max-width: 768px) {
+            #outer {
+                flex-direction: column; /* Oszlopirányú elrendezés kis képernyőkön */
+                align-items: center; /* Középre igazítja az elemeket */
+            }
+
+            #left-inner-div, #right-inner-div {
+                width: 100%; /* 100% szélesség mobilon */
+            }
+
+            .file-icon {
+                max-width: 100px; /* Kis képernyőkön kisebb ikonok */
+            }
+        }
+
+-compare.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: solid 1px black">
+        <h2>Wellcome, {{ username }}!</h2>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h1 style="text-align: center; margin: 5% 0 5% 0;">Hype Office Portal</h1>
+
+    <div id="outer">
+
+        <!-- Left Div -->
+        <div id="left-inner-div" style="border-radius: 10px; box-shadow: 5px 5px #e8e8e8; margin: 10px; background-color: #f8f8f8;">
+            <p style="text-align: center; font-size: 2vw; margin-bottom: 0px;">Document comparison</p>
+
+            <!-- Belső elemek sorban: PDF ikon, Közép üres, DOCX ikon -->
+            <div class="inner-row">
+                <div id="left-left-inner-div" class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file1" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/pdf-icon.png') }}" alt="PDF feltöltés ikon">
+                        </label>
+                        <input type="file" name="file1" id="file1" class="file-input" accept=".pdf" required>
+                    </div>
+                </div>
+                <div id="left-center-inner-div" class="inner-column">
+                    <img style="width:30%; height: 30%; margin: auto;" src="{{ url_for('static', filename='assets/images/arrow-vica-versa.png') }}" alt="vica versa icon">
+                </div>
+                <div id="left-right-inner-div" class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file2" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/docx-icon.png') }}" alt="DOCX feltöltés ikon">
+                        </label>
+                        <input type="file" name="file2" id="file2" class="file-input" accept=".docx" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gomb az alján -->
+            <button type="submit" class="form-button">COMPARE</button>
+        </div>
+
+        <!-- Right Div -->
+        <div id="right-inner-div" style="border-radius: 10px; box-shadow: 5px 5px #e8e8e8; margin: 10px; background-color: #f8f8f8;">
+            <p style="text-align: center; font-size: 2vw; margin-bottom: 0px;">Price Proposal</p>
+
+            <div class="inner-row">
+                <div class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file1" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/web-icon.png') }}" alt="PDF feltöltés ikon">
+                        </label>
+                        <input type="file" name="file1" id="file11" class="file-input" accept=".pdf" required>
+                    </div>
+                </div>
+                <div class="inner-column">
+                    <img style="width:20%; height: 15%; margin: auto;" src="{{ url_for('static', filename='assets/images/arrow-right.png') }}" alt="vica versa ikon">
+                </div>
+                <div class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file2" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/pdf-icon.png') }}" alt="DOCX feltöltés ikon">
+                        </label>
+                        <input type="file" name="file2" id="file22" class="file-input" accept=".docx" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gomb az alján -->
+            <button type="submit" class="form-button">CONVERT</button>
+        </div>
+
+    </div>
+</body>
+</html>
+
+-compare_result.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Összehasonlítás eredménye11</title>
+</head>
+<body>
+    <h1>Összehasonlítás eredménye</h1>
+    <div>{{ result|safe }}</div>
+    <a href="{{ url_for('compare') }}">Vissza</a>
+
+    <!-- Logout gomb formba ágyazva, POST kéréssel a /logout útvonalra -->
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit">Kijelentkezés</button>
+    </form>
+</body>
+</html>
+
+-login.html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+    <style>
+
+
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="box">
+        <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="Logo">
+      <h1 class="box_title"><br>Label Compare<br>Login</h1>
+      <p class="box_subtitle">Please log in to continue</p>
+    <form class="form" method="POST" action="{{ url_for('login') }}">
+        <label for="username">Username:</label>
+        <input class="form_input" type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input class="form_input" type="password" id="password" name="password" required>
+
+        <button class="form_button" type="submit">Login</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+  </div>
+  <footer>
+    <div id="version">
+      <p>v.1.0</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+-server.py
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from config import Config
+from app.models import db, User
+import bcrypt
+import os
+from werkzeug.utils import secure_filename
+from app.compare import compare_documents
+import magic
+from functools import wraps
+
+app = Flask(__name__)
+
+# A projekt gyökérkönyvtára
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+# UPLOAD_FOLDER abszolút elérési útja
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
+
+
+# Ellenőrizzük, hogy létezik-e az UPLOAD_FOLDER, ha nem, akkor hozzuk létre
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+
+# Flask konfiguráció betöltése a config.py-ból
+app.config.from_object(Config)
+
+
+# Adatbázis inicializálás
+db.init_app(app)
+
+
+# **Login_required dekorátor létrehozása itt!**
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:  # Ha a 'user_id' nincs a session-ben, irányítsa a felhasználót a bejelentkezéshez
+            flash('Kérjük, jelentkezz be a hozzáféréshez!', 'danger')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Ellenőrzés, hogy a kapcsolat működik-e
+# @app.route('/')
+# def index():
+#     try:
+#         users = User.query.all()
+#         return f"Kapcsolat sikeres, {len(users)} felhasználó található."
+#     except Exception as e:
+#         return f"Kapcsolat sikertelen, hiba: {str(e)}"
+
+
+@app.route("/<string:page_name>")
+def html_page(page_name):
+    return render_template(page_name)
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Keresd meg a felhasználót az adatbázisban
+        user = User.query.filter_by(username=username).first()
+
+        if not user:
+            flash('Felhasználó nem található!', 'danger')
+            return redirect(url_for('login'))
+
+        # Ellenőrizzük a jelszót a bcrypt segítségével
+        if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            # Felhasználói adatok mentése a session-be
+            session['user_id'] = user.id
+            session['username'] = username
+            flash('Bejelentkezés sikereeeees!', 'success')
+
+            # Flash üzenetek törlése a redirect után
+            session.pop('_flashes', None)
+            return redirect(url_for('compare'))
+        else:
+            flash('Hibás jelszó!', 'danger')
+
+    return render_template('login.html')
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    # if request.method == 'POST'
+    session.clear()  # Töröljük az összes session adatot
+    flash('Sikeresen kijelentkeztél!', 'success')
+    return redirect(url_for('login'))
+
+
+# Cache-invalidation funkció
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+# Files compare:
+app.config['UPLOAD_FOLDER'] = './uploads'
+ALLOWED_EXTENSIONS = {'pdf', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/compare', methods=['GET', 'POST'])
+@login_required  # Itt hozzáadjuk a login_required dekorátort
+def compare():
+    username = session.get('username')  # A session-ből kiolvaszuk a felhasználó nevét
+    if request.method == 'POST':
+        # Ellenőrizzük, hogy mindkét fájl fel van-e töltve
+        if 'file1' not in request.files or 'file2' not in request.files:
+            flash('Mindkét fájlt fel kell tölteni!', 'danger')
+            return redirect(request.url)
+
+        file1 = request.files['file1']
+        file2 = request.files['file2']
+
+        if file1.filename == '' or file2.filename == '':
+            flash('Nincs kiválasztott fájl!', 'danger')
+            return redirect(request.url)
+
+        # Biztonságos fájlnév mentése
+        filename1 = secure_filename(file1.filename)
+        filename2 = secure_filename(file2.filename)
+        file1_path = os.path.join(app.config['UPLOAD_FOLDER'], filename1)
+        file2_path = os.path.join(app.config['UPLOAD_FOLDER'], filename2)
+
+        # Mentse a fájlokat
+        file1.save(file1_path)
+        file2.save(file2_path)
+
+        # Ellenőrizzük a fájlok tényleges típusát a magic modul segítségével
+        mime_type1 = magic.from_file(file1_path, mime=True)
+        mime_type2 = magic.from_file(file2_path, mime=True)
+
+        print(f"file1 MIME type: {mime_type1}")
+        print(f"file2 MIME type: {mime_type2}")
+
+        # Ellenőrzés: az első fájl PDF legyen, a második pedig DOCX
+        if mime_type1 != 'application/pdf':
+            flash('Az első fájlnak PDF-nek kell lennie!', 'danger')
+            os.remove(file1_path)
+            os.remove(file2_path)
+            return redirect(request.url)
+
+        if mime_type2 != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            flash('A második fájlnak DOCX-nek kell lennie!', 'danger')
+            os.remove(file1_path)
+            os.remove(file2_path)
+            return redirect(request.url)
+
+        # Fájlok összehasonlítása, ha a fájlformátumok megfelelőek
+        result = compare_documents(filename1, filename2)
+        return render_template('compare_result.html', result=result, username=username)
+
+    return render_template('compare.html', username=username)
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()  # Adatbázis létrehozása, ha szükséges
+    app.run(debug=True)  # Hibakeresési mód
+
+
+-compare.py
+from flask import Flask, session
+from difflib import SequenceMatcher
+import docx
+import PyPDF2
+import os
+
+
+# DOCX fájl beolvasása
+def read_docx(file_path):
+    doc = docx.Document(file_path)
+    text = []
+    for paragraph in doc.paragraphs:
+        text.append(paragraph.text)
+    return '\n'.join(text)
+
+
+# PDF fájl beolvasása, mesterséges sorokkal
+def read_pdf(file_path):
+    text = []
+    with open(file_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        for page_num in range(len(reader.pages)):
+            page = reader.pages[page_num]
+            extracted_text = page.extract_text()
+
+            # Kinyert szöveg sorokra bontása - mesterséges sortörések hozzáadása
+            if extracted_text:
+                # Minden mondatot új sorba teszünk, hogy szimuláljuk a PDF sorokat
+                lines = extracted_text.split('. ')  # Pont után sortörés
+                for line in lines:
+                    text.append(line.strip())  # Tisztítjuk a felesleges szóközöket
+    return '\n'.join(text)
+
+
+# Soron belüli különbségek kiemelése, közös részek zöld, különbségek piros
+def highlight_differences(seq1, seq2):
+    matcher = SequenceMatcher(None, seq1, seq2)
+    output = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'equal':
+            # Közös részek zölddel
+            output.append(f'<span style="color: green;">{seq1[i1:i2]}</span>')
+        elif tag in ['replace', 'delete', 'insert']:
+            # Eltérő részek pirossal
+            output.append(f'<span style="color: red;">{seq1[i1:i2]}</span>')
+            output.append(f'<span style="color: red;">{seq2[j1:j2]}</span>')
+    return ''.join(output)
+
+
+# Dokumentumok összehasonlítása soronként
+def compare_documents(file1, file2):
+    # PDF és DOCX fájl beolvasása
+    pdf_text = read_pdf(os.path.join('./uploads', file1))
+    docx_text = read_docx(os.path.join('./uploads', file2))
+
+    pdf_lines = pdf_text.splitlines()
+    docx_lines = docx_text.splitlines()
+
+    html_diff = []
+
+    # Soronként hasonlítjuk össze a két dokumentumot
+    for i in range(max(len(docx_lines), len(pdf_lines))):
+        if i < len(docx_lines) and i < len(pdf_lines):
+            if docx_lines[i] != pdf_lines[i]:
+                # Ha a sor különbözik, soron belüli eltéréseket keresünk
+                highlighted_line = highlight_differences(docx_lines[i], pdf_lines[i])
+                html_diff.append(f'<div>{highlighted_line}</div>')  # Nincs sárga háttér, ha eltérés van
+            else:
+                # Ha a sorok teljesen megegyeznek, sárga háttérrel és zöld szöveggel jelöljük
+                html_diff.append(
+                    f'<div style="background-color: yellow;"><span style="color: green;">{docx_lines[i]}</span></div>')
+        elif i < len(docx_lines):
+            # Ha a DOCX fájlban van sor, de a PDF-ben nincs, teljes sor pirossal
+            html_diff.append(f'<div><span style="color: red;">{docx_lines[i]}</span></div>')
+        elif i < len(pdf_lines):
+            # Ha a PDF fájlban van sor, de a DOCX fájlban nincs, teljes sor pirossal
+            html_diff.append(f'<div><span style="color: red;">{pdf_lines[i]}</span></div>')
+
+    return '<br>'.join(html_diff)
+
+
+-config.py
+import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or '123456789'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://Benedek:Hype#24Python!@localhost/compare'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+-models.py
+from flask_sqlalchemy import SQLAlchemy
+
+# Adatbázis inicializálás
+db = SQLAlchemy()
+
+# Felhasználói modell
+class User(db.Model):
+    __tablename__ = 'Users'  # Az adatbázisban található tényleges tábla neve
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
+
+
+-->

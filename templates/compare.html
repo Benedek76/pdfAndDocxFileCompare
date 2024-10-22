@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+<body style="background-image: url('{{ url_for('static', filename='assets/images/carbon_background.jpg') }}'); background-repeat: no-repeat; background-size: cover;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: solid 1px black; padding: 0 1% 0 1%; background-color: #8CEC00;">
+        <h2>Wellcome, {{ username }}!</h2>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button class="form-button" style="font-family: monospace; padding: 5px 10px 5px 10px;" type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h1 style="text-align: center; margin: 5% 0 5% 0; font-family: 'Qaranta'; color: white;">HYPE OFFICE PORTAL</h1>
+
+    <div id="outer">
+
+        <!-- Left Div -->
+        <div id="left-inner-div" style="border-radius: 10px; box-shadow: 3px 3px #8CEC00; margin: 10px; background-color: #f8f8f8;">
+            <p style="text-align: center; font-size: 1.5vw; margin-bottom: 0px;">Document comparison</p>
+
+            <form action="{{ url_for('compare') }}" method="POST" enctype="multipart/form-data">
+                <div class="inner-row">
+                    <div id="left-left-inner-div" class="inner-column">
+                        <div class="file-input-container">
+                            <label for="file1" class="file-icon">
+                                <img src="{{ url_for('static', filename='assets/images/pdf-icon.png') }}" alt="PDF upload icon">
+                            </label>
+                            <input type="file" name="file1" id="file1" class="file-input" accept=".pdf" required>
+                        </div>
+                    </div>
+                    <div id="left-center-inner-div" class="inner-column">
+                        <img style="width:30%; height: 30%; margin: auto;" src="{{ url_for('static', filename='assets/images/arrow-vica-versa.png') }}" alt="vica versa icon">
+                    </div>
+                    <div id="left-right-inner-div" class="inner-column">
+                        <div class="file-input-container">
+                            <label for="file2" class="file-icon">
+                                <img src="{{ url_for('static', filename='assets/images/docx-icon.png') }}" style="height: 100%;" alt="DOCX upload icon">
+                            </label>
+                            <input type="file" name="file2" id="file2" class="file-input" accept=".docx" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button style="display: block; margin:0 auto 5% auto; font-family: monospace; font-weight: bold; letter-spacing: 2px;" type="submit" class="form-button">COMPARE</button>
+            </form>
+
+        </div>
+
+        <!-- Right Div -->
+        <div id="right-inner-div" style="border-radius: 10px; box-shadow: 5px 5px #d6d6d6; margin: 10px; background-color: #f8f8f8;">
+            <p style="text-align: center; font-size: 1.5vw; margin-bottom: 0px;">Price Proposal</p>
+
+            <div class="inner-row">
+                <div class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file1" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/web-icon.png') }}" style="height: 90%;" alt="">
+                        </label>
+                        <input type="file" name="file1" id="file11" class="file-input" accept=".pdf" required>
+                    </div>
+                </div>
+                <div class="inner-column">
+                    <img style="width:25%; height: 15%; margin: auto;" src="{{ url_for('static', filename='assets/images/arrow-right.png') }}" alt="vica versa ikon">
+                </div>
+                <div class="inner-column">
+                    <div class="file-input-container">
+                        <label for="file2" class="file-icon">
+                            <img src="{{ url_for('static', filename='assets/images/pdf-icon.png') }}" alt="">
+                        </label>
+                        <input type="file" name="file2" id="file22" class="file-input" accept=".docx" required>
+                    </div>
+                </div>
+            </div>
+
+            <button style="font-family: monospace; font-weight: bold; letter-spacing: 2px;" type="submit" class="form-button">CONVERT</button>
+        </div>
+
+    </div>
+</body>
+</html>

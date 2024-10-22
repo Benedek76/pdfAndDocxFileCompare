@@ -1,0 +1,19 @@
+# Python generated files
+__pycache__/
+*.pyc
+
+# Virtual environment files
+venv/
+
+# Dependencies
+.env
+
+# Database
+*.db
+
+# Uploaded files
+uploads/
+
+# Others
+.DS_Store  # macOS fájl
+
