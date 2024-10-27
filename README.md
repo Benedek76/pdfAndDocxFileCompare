@@ -1,7 +1,7 @@
-# Office Portal - Document Comparison Tool
+# Corporate Office Portal - Python Flask Project
 
 ## Overview
-This project implements a corporate **Office Portal**, which offers various tools and programs for internal company use. One of the primary tools available in this portal is a **PDF document comparison tool**, which compares uploaded PDF files against a **master DOCX file** and visually displays the differences on the web interface.
+This Python - Flask project implements a corporate **Office Portal**, which offers various tools and programs for internal company use. One of the primary tools available in this portal is a **PDF document comparison tool**, which compares uploaded PDF files against a **master DOCX file** and visually displays the differences on the web interface.
 
 The comparison is highlighted with **green** for similarities and **red** for differences, allowing users to quickly identify changes between the two documents.
 
